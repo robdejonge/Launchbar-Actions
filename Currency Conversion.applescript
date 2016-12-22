@@ -55,6 +55,7 @@ on handle_string(theInput)
 		tell application "LaunchBar"
 			set theMessage to gsToAmt
 			set theTitle to gsFromAmt & " " & gsFromCurr & " in " & gsToCurr
+			set the clipboard to gsToAmt
 			display in large type theMessage with title theTitle
 		end tell
 		
