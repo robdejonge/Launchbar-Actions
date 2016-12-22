@@ -1,5 +1,5 @@
 # =============================================================================
-# Currency conversion - v20141028
+# Currency conversion - v20161222
 # -----------------------------------------------------------------------------
 # This script is meant to be launched from LaunchBar, taking an input query in
 # the format ##src dst and asking Google to convert ## number of src currency
@@ -11,8 +11,7 @@
 # getting this off the ground.
 # -----------------------------------------------------------------------------
 # Further development: 
-# - allow inserting of the word 'to' 
-# - allow ommitting a source amount
+# - allow input with space between amount and source currency
 # - elegant error handling and reporting
 # -----------------------------------------------------------------------------
 
@@ -25,34 +24,27 @@ on handle_string(theInput)
 		set theFirstCurrency to text item 2 of theInput as text
 		set theSecondCurrency to text item -1 of theInput as text
 		
-		set theURL to quoted form of ("http://rate-exchange.appspot.com/currency?from=" & theFirstCurrency & "&to=" & theSecondCurrency & "&q=" & theAmount)
-		set theSource to (do shell script "curl " & theURL) as string
+		set theURL to quoted form of ("http://www.google.com/finance/converter?from=" & theFirstCurrency & "&to=" & theSecondCurrency & "&a=" & theAmount)
+		set theSource to (do shell script "curl " & theURL & " | grep currency_converter_result") as string
 		set astid to AppleScript's text item delimiters
-		set AppleScript's text item delimiters to " "
+		set AppleScript's text item delimiters to "â€ "
 		set theSource to text items of theSource
 		set AppleScript's text item delimiters to ""
 		set theSource to theSource as text
 		
 		# grab the 2 important bits from the google-returned string
-		set AppleScript's text item delimiters to ","
-		set gsFrom to text item 3 of theSource
-		set gsTo to text item 1 of theSource
-		set gsResult to text item 4 of theSource
-		
-		# crop those important bits 
-		set AppleScript's text item delimiters to "\""
-		set gsFrom to text item 4 of gsFrom
-		set gsTo to text item 4 of gsTo
-		set gsResult to text item 3 of gsResult
-		set AppleScript's text item delimiters to "}"
-		set gsResult to text item 1 of gsResult
+		set AppleScript's text item delimiters to ">"
+		set gsFrom to text item 2 of theSource
+		set gsTo to text item 3 of theSource
 		
 		# split the important bits into their 2 components, the amount and the currency name
 		set AppleScript's text item delimiters to " "
-		set gsFromAmt to theAmount
-		set gsFromCurr to gsFrom
-		set gsToAmt to text item 2 of gsResult
-		set gsToCurr to gsTo
+		set gsFromAmt to text item 1 of gsFrom
+		set gsFromCurr to text item 2 of gsFrom
+		set gsToAmt to text item 1 of gsTo
+		set gsToCurr to text item 2 of gsTo
+		set AppleScript's text item delimiters to "<"
+		set gsToCurr to text item 1 of gsToCurr
 		
 		# limit the result amount to 2 decimals
 		set the_offset to offset of "." in gsToAmt
@@ -63,7 +55,6 @@ on handle_string(theInput)
 		tell application "LaunchBar"
 			set theMessage to gsToAmt
 			set theTitle to gsFromAmt & " " & gsFromCurr & " in " & gsToCurr
-			set selection as text to theMessage
 			display in large type theMessage with title theTitle
 		end tell
 		
