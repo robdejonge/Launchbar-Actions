@@ -1,5 +1,5 @@
 # =============================================================================
-# Currency conversion - v20161222
+# Currency conversion - v20171231
 # -----------------------------------------------------------------------------
 # This script is meant to be launched from LaunchBar, taking an input query in
 # the format ##src dst and asking Google to convert ## number of src currency
