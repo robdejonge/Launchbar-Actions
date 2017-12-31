@@ -48,9 +48,11 @@ on handle_string(theInput)
 		
 		# limit the result amount to 2 decimals
 		set the_offset to offset of "." in gsToAmt
-		set the_offset to the_offset + 2
-		set gsToAmt to text 1 through the_offset of gsToAmt
-		
+		if the_offset is not 0 then
+			set the_offset to the_offset + 2
+			set gsToAmt to text 1 through the_offset of gsToAmt
+		end if 
+	
 		# display the message
 		tell application "LaunchBar"
 			set theMessage to gsToAmt
