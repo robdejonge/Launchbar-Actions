@@ -24,7 +24,7 @@ on handle_string(theInput)
 		set theFirstCurrency to text item 2 of theInput as text
 		set theSecondCurrency to text item -1 of theInput as text
 		
-		set theURL to quoted form of ("http://www.google.com/finance/converter?from=" & theFirstCurrency & "&to=" & theSecondCurrency & "&a=" & theAmount)
+		set theURL to quoted form of ("https://finance.google.com/finance/converter?from=" & theFirstCurrency & "&to=" & theSecondCurrency & "&a=" & theAmount)
 		set theSource to (do shell script "curl " & theURL & " | grep currency_converter_result") as string
 		set astid to AppleScript's text item delimiters
 		set AppleScript's text item delimiters to "†"
