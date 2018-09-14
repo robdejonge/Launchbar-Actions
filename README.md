@@ -1,8 +1,8 @@
-###About###
+### About
 
 This script makes it easy to convert currencies right from LaunchBar, a great tool from Objective Development.
 
-###User Guide###
+### User Guide
 
 - Ensure the script has been indexed by LaunchBar
 - Select it and hit the space bar to enter the search query
@@ -10,5 +10,5 @@ This script makes it easy to convert currencies right from LaunchBar, a great to
 - The script will consult http://rate-exchange.appspot.com/currency to perform the currency conversion. 
 - The result is displayed 'in large type', Cmd-C copies this to the clipboard or any other key dismisses.
 
-###License###
+### License
 This work is licensed under a [Creative Commons Attribution-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-sa/3.0/).
