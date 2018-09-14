@@ -2,7 +2,7 @@
 # Currency conversion - v20180914
 # -----------------------------------------------------------------------------
 # This script is meant to be launched from LaunchBar, taking an input query in
-# the format ##src dst and asking Google to convert ## number of src currency
+# the format "## src [to] dst" and asking Google to convert ## number of src currency
 # units into dst currency units. The script will limit the output currency
 # units to 2 decimals. Use ISO 4217 codes for source and destination
 # indication.
