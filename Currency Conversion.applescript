@@ -1,23 +1,47 @@
 # =============================================================================
-# Currency conversion - v20180914
+# Currency conversion - v20190516
 # -----------------------------------------------------------------------------
 # This script is meant to be launched from LaunchBar, taking an input query in
-# the format "## src [to] dst" and asking Google to convert ## number of src currency
+# the format ##src dst and asking Google to convert ## number of src currency
 # units into dst currency units. The script will limit the output currency
 # units to 2 decimals. Use ISO 4217 codes for source and destination
 # indication.
 #
 # Thanks to iRounak and CapnAverage on the obdev.at forum for their help in
-# getting this off the ground.
+# getting this off the ground. Thanks to regulus6633 for the routine, which
+# he didnt write. 
 # -----------------------------------------------------------------------------
 
+on makeCaseUpper(theString)
+	set UPPERCASE to "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	set lowercase to "abcdefghijklmnopqrstuvwxyz"
+	set AppleScript's text item delimiters to " "
+	set theWords to text items of theString as list
+	set AppleScript's text item delimiters to ""
+	set newList to {}
+	repeat with theWord in theWords
+		set chrs to characters of theWord
+		set Nchrs to count chrs -- get the number of characters
+		repeat with K from 1 to Nchrs
+			if (item K of chrs) is in lowercase then
+				set olc to offset of (item K of chrs) in lowercase
+				set item K of chrs to character olc of UPPERCASE
+			end if
+		end repeat
+		set end of newList to chrs as string
+	end repeat
+	set AppleScript's text item delimiters to " "
+	set theString to newList as string
+	set AppleScript's text item delimiters to ""
+	return theString
+end makeCaseUpper
 
 on handle_string(theInput)
 	
 	try
 		
 		# settings
-		set APIKEY to "currencylayer.com -> sign in -> account dashboard -> your api access key"
+		set APIKEY to "INSERT_YOUR_OWN_API_KEY_HERE"
 		
 		# break down the query
 		set AppleScript's text item delimiters to " "
@@ -26,13 +50,15 @@ on handle_string(theInput)
 		set theSecondCurrency to text item -1 of theInput as text
 		
 		# obtain the exchange rate
-		set theURL to quoted form of ("http://apilayer.net/api/live?access_key=" & APIKEY & "&currencies=" & theSecondCurrency & "&source=" & theFirstCurrency & "&format=1")
-		set theSource to (do shell script "curl --silent " & theURL & " | grep --ignore-case " & theFirstCurrency & theSecondCurrency) as string
-		set AppleScript's text item delimiters to ":"
-		set theRate to text item 2 of theSource
+		set theURL to quoted form of ("https://free.currconv.com/api/v7/convert?q=" & theFirstCurrency & "_" & theSecondCurrency & "&compact=ultra&apiKey=" & APIKEY)
+		set theSource to (do shell script "curl --silent " & theURL) as string
+		set AppleScript's text item delimiters to ""
+		set theRate to (characters 12 through ((length of theSource) - 1) of theSource) as string
 		
 		# crazy complicated math processing engine 
 		set theResult to theAmount * theRate as string
+		set theFirstCurrency to makeCaseUpper(theFirstCurrency)
+		set theSecondCurrency to makeCaseUpper(theSecondCurrency)
 		
 		# limit the result amount to 2 decimals
 		set the_offset to offset of "." in theResult
@@ -43,8 +69,8 @@ on handle_string(theInput)
 		
 		# display the message
 		tell application "LaunchBar"
-			set theMessage to theResult
-			set theTitle to theAmount & " " & theFirstCurrency & " in " & theSecondCurrency
+			set theMessage to theSecondCurrency & " " & theResult
+			set theTitle to theFirstCurrency & " " & theAmount
 			set the clipboard to theResult
 			display in large type theMessage with title theTitle
 		end tell
