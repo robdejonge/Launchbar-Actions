@@ -41,7 +41,7 @@ on handle_string(theInput)
 	try
 		
 		# settings
-		set APIKEY to "INSERT_YOUR_OWN_API_KEY_HERE"
+		set APIKEY to "210a26f0ad66488a0d63"
 		
 		# break down the query
 		set AppleScript's text item delimiters to " "
@@ -57,10 +57,10 @@ on handle_string(theInput)
 		
 		# crazy complicated math processing engine 
 		set theResult to theAmount * theRate as string
+		
+		# prepare stuff for display
 		set theFirstCurrency to makeCaseUpper(theFirstCurrency)
 		set theSecondCurrency to makeCaseUpper(theSecondCurrency)
-		
-		# limit the result amount to 2 decimals
 		set the_offset to offset of "." in theResult
 		if the_offset is not 0 then
 			set the_offset to the_offset + 2
@@ -69,15 +69,15 @@ on handle_string(theInput)
 		
 		# display the message
 		tell application "LaunchBar"
-			set theMessage to theSecondCurrency & " " & theResult
 			set theTitle to theFirstCurrency & " " & theAmount
-			set the clipboard to theResult
+			set theMessage to theSecondCurrency & " " & theResult
 			display in large type theMessage with title theTitle
+			set the clipboard to theResult
 		end tell
 		
 	on error ErrMsg
 		
-		tell application "LaunchBar" to display in large type ErrMsg with title "Currency conversion encountered an error"
+		tell application "Safari" to open location "https://www.google.com/search?q=" & (theAmount & "%20" & theFirstCurrency & " " & theSecondCurrency)
 		
 	end try
 	
