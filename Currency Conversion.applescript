@@ -41,7 +41,7 @@ on handle_string(theInput)
 	try
 		
 		# settings
-		set APIKEY to "210a26f0ad66488a0d63"
+		set APIKEY to "USE YOUR OWN API KEY"
 		
 		# break down the query
 		set AppleScript's text item delimiters to " "
