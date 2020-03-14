@@ -3,7 +3,6 @@ An application installed on every single Mac I have owned since 2008, LaunchBar 
 ### Scripts
 
 #### Currency Conversion.applescript
-
 Quickly convert currencies by entering a query in the format '# src [to] dst' where src are currency symbols and # is the amount being converted, eg. '15 usd eur'. Hit enter to query. The result is displayed 'in large type', Cmd-C copies this to the clipboard or any other key dismisses.
 
 ### Installation
