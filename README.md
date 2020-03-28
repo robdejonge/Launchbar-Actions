@@ -5,6 +5,9 @@ An application installed on every single Mac I have owned since 2008, LaunchBar 
 #### Currency Conversion.applescript
 Quickly convert currencies by entering a query in the format '# src [to] dst' where src are currency symbols and # is the amount being converted, eg. '15 usd eur'. Hit enter to query. The result is displayed 'in large type', Cmd-C copies this to the clipboard or any other key dismisses.
 
+#### Random password generator.applescript
+Generates a random password using a mix of letters, numbers and dashes, and copies it to the clipboard. Running the action requires an input, which is the length of the random password generated. 
+
 ### Installation
 
 Save the files you wish to use into ~/Library/Application Support/LaunchBar/Actions and ensure you update your index (Opt-Cmd-R) to use them right away. Some scripts may require you to edit settings directly in the source code.  
