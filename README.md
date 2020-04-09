@@ -9,7 +9,16 @@ Quickly convert currencies by entering a query in the format '# src [to] dst' wh
 Generates a random password using a mix of letters, numbers and dashes, and copies it to the clipboard. Running the action requires an input, which is the length of the random password generated.
 
 #### UNIX manual page.applescript
-Shows the manual page for a certain command. Provide the command as a parameter and LaunchBar will open a Preview window with the manual page formatted in the usual manner. 
+Shows the manual page for a certain command. Provide the command as a parameter and LaunchBar will open a Preview window with the manual page formatted in the usual manner.
+
+#### Home Assistant scripts
+Home Assistant is an open source home automation that puts local control and privacy first. While configuring, I often have to navigate through the web interface to trigger certain actions. As there is an API that can be used for this, I wrote a few simple scripts to speed up this process.
+
+**Home Assistant - Settings.json**: Contains a few settings common to all scripts, so that you have to set them only once and not in every script individually. Settings should be self-explanatory, leave the 'api' setting alone unless you really know what you are doing. Do make sure the absolute path to this file is set correctly in every script, as they otherwise do not work.
+
+**Home Assistant - restart server.py**: Restarts Home Assistant.
+
+**Home Assistant - reload automations.py**: Reloads the automations in Home Assistant.
 
 ### Installation
 
