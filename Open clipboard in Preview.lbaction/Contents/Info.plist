@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleIconFile</key>
+	<string>font-awesome:fa-clipboard</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.robdejonge.LaunchBar.action.openclipboardinpreview</string>
+	<key>CFBundleName</key>
+	<string>Open clipboard in Preview</string>
+	<key>CFBundleVersion</key>
+	<string>1.0</string>
+	<key>LBDescription</key>
+	<dict>
+		<key>LBAuthor</key>
+		<string>Rob de Jonge</string>
+		<key>LBEmail</key>
+		<string></string>
+		<key>LBSummary</key>
+		<string>Opens Preview and pastes an image currently held in the system clipboard. Useful with screenshots.</string>
+		<key>LBTwitter</key>
+		<string>@robdejonge</string>
+		<key>LBWebsiteURL</key>
+		<string>https://github.com/robdejonge</string>
+	</dict>
+	<key>LBScripts</key>
+	<dict>
+		<key>LBDefaultScript</key>
+		<dict>
+			<key>LBResultType</key>
+			<string>unknown</string>
+			<key>LBScriptName</key>
+			<string>default.scpt</string>
+		</dict>
+	</dict>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2020 Rob de Jonge</string>
+</dict>
+</plist>
