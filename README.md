@@ -26,8 +26,6 @@ Home Assistant is an open source home automation that puts local control and pri
 
 **Home Assistant - reload automations.py**: Reloads the automations in Home Assistant.
 
-!!!! add bullet points for the above !!!!
-
 ### Installation
 
 Clone the repository, and click on every `.lbaction` you wish to install.
