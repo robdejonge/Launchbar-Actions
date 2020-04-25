@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleIconFile</key>
+	<string>home-assistant-logo.png</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.robdejonge.LaunchBar.action.HomeAssistant</string>
+	<key>CFBundleName</key>
+	<string>Home Assistant</string>
+	<key>LBDescription</key>
+	<dict>
+		<key>LBAuthor</key>
+		<string>Rob de Jonge</string>
+		<key>LBEmail</key>
+		<string></string>
+		<key>LBTwitter</key>
+		<string>@robdejonge</string>
+		<key>LBWebsiteURL</key>
+		<string>https://github.com/robdejonge</string>
+	</dict>
+	<key>LBScripts</key>
+	<dict>
+		<key>LBDefaultScript</key>
+		<dict>
+			<key>LBKeepWindowActive</key>
+			<true/>
+			<key>LBResultType</key>
+			<string>unknown</string>
+			<key>LBReturnsResult</key>
+			<true/>
+			<key>LBScriptName</key>
+			<string>default.js</string>
+		</dict>
+	</dict>
+</dict>
+</plist>

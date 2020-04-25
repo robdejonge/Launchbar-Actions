@@ -1,0 +1,9 @@
+{
+    "homeassistant":{
+        "hostname" : "your.hostname.com",
+        "ssl" : true,
+        "port" : 443,
+        "base" : "api",
+        "key" : "Go to Home Assistant, click on your user bottom-left, create a Long-Lived Access Token"
+    }
+}

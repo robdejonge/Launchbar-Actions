@@ -1,9 +1,0 @@
-{
-    "homeassistant":{
-        "hostname" : "localhost",
-        "ssl" : false,
-        "port" : "8123",
-        "base" : "api",
-        "key" : "put your long-lived access token here"
-    }
-}
