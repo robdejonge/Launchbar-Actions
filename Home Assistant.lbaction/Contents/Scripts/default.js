@@ -1,5 +1,4 @@
-// LaunchBar Action Script
-
+// loads the settings file
 try {
     var settings = File.readJSON(Action.path+'/Contents/Resources/settings.json');
     // Use object
@@ -7,51 +6,39 @@ try {
     LaunchBar.alert('Error while reading settings: ' + exception);
 }
 
+// loads the name of the installation and HA version number
+var discovery_info = getAPI('discovery_info').data;
+
+// --
+
 function restartHA() {
 
+  action = 'restart Home Assistant'
   result = postAPI('services/homeassistant/restart');
 
-  if (result.timeOut) {
+  if (anyCommonErrors(result, action)) {
 
-    LaunchBar.alert('Request to restart Home Assistant timed out.')
-
-  } else if (result.error != undefined) {
-
-    LaunchBar.alert('Unable to restart Home Assistant', result.error)
-
-  } else if (result.response.status != 200) {
-
-    LaunchBar.alert('Server said: ',result.response.localizedStatus,' (',result.response.status,')')
+    // already did what needed to be done
 
   } else {
 
     LaunchBar.displayNotification({
 
-      title  : 'Home Assistant',
-      string : 'Restarted'
+      title  : discovery_info.location_name + ' (Home Assistant ' + discovery_info.version + ')',
+      string : action.charAt(0).toUpperCase() + action.substring(1) + ' complete'
 
     });
-
   }
-
-
 }
 
 function checkConfig() {
 
+  action = 'check configuration'
   result = postAPI('config/core/check_config');
 
-  if (result.timeOut) {
+  if (anyCommonErrors(result, action)) {
 
-    LaunchBar.alert('Request to check configuration timed out.')
-
-  } else if (result.error != undefined) {
-
-    LaunchBar.alert('Unable to check configuration', result.error)
-
-  } else if (result.response.status != 200) {
-
-    LaunchBar.alert('Server said: ',result.response.localizedStatus,' (',result.response.status,')')
+    // already did what needed to be done
 
   } else if (result.data.result != 'valid') {
 
@@ -61,8 +48,8 @@ function checkConfig() {
 
     LaunchBar.displayNotification({
 
-      title  : 'Home Assistant',
-      string : 'Configuration valid'
+      title  : discovery_info.location_name + ' (Home Assistant ' + discovery_info.version + ')',
+      string : action.charAt(0).toUpperCase() + action.substring(1) + ' complete: valid configuration!'
 
     });
   }
@@ -70,26 +57,19 @@ function checkConfig() {
 
 function reloadCoreConfig() {
 
+  action = 'reload core configuration';
   result = postAPI('services/homeassistant/reload_core_config');
 
-  if (result.timeOut) {
+  if (anyCommonErrors(result, action)) {
 
-    LaunchBar.alert('Request to reload core configuration timed out.')
-
-  } else if (result.error != undefined) {
-
-    LaunchBar.alert('Unable to reload core configuration', result.error)
-
-  } else if (result.response.status != 200) {
-
-    LaunchBar.alert('Server said: ',result.response.localizedStatus,' (',result.response.status,')')
+    // already did what needed to be done
 
   } else {
 
     LaunchBar.displayNotification({
 
-      title  : 'Home Assistant',
-      string : 'Core configuration reloaded'
+      title  : discovery_info.location_name + ' (Home Assistant ' + discovery_info.version + ')',
+      string : action.charAt(0).toUpperCase() + action.substring(1) + ' complete'
 
     });
   }
@@ -97,32 +77,80 @@ function reloadCoreConfig() {
 
 function reloadAutomations() {
 
+  action = 'reload automations';
   result = postAPI('services/automation/reload');
 
-  if (result.timeOut) {
+  if (anyCommonErrors(result, action)) {
 
-    LaunchBar.alert('Request to reload automations timed out.')
-
-  } else if (result.error != undefined) {
-
-    LaunchBar.alert('Unable to reload automations', result.error)
-
-  } else if (result.response.status != 200) {
-
-    LaunchBar.alert('Server said: ',result.response.localizedStatus,' (',result.response.status,')')
+    // already did what needed to be done
 
   } else {
 
     LaunchBar.displayNotification({
 
-      title  : 'Home Assistant',
-      string : 'Automations reloaded'
+      title  : discovery_info.location_name + ' (Home Assistant ' + discovery_info.version + ')',
+      string : action.charAt(0).toUpperCase() + action.substring(1) + ' complete'
 
     });
   }
 }
 
+function anyCommonErrors(resultObjectReceived, thingToDo) {
+
+  anErrorOccurred = false;
+
+  if (resultObjectReceived.timeOut) {
+
+    LaunchBar.alert('Request to ' + thingToDo + ' timed out.')
+    anErrorOccurred = true;
+
+  } else if (resultObjectReceived.error != undefined) {
+
+    LaunchBar.alert('Unable to '+thingToDo, resultObjectReceived.error)
+    anErrorOccurred = true;
+
+  } else if (resultObjectReceived.response.status != 200) {
+
+    LaunchBar.alert('Unable to '+thingToDo, resultObjectReceived.response.localizedStatus + ' (' + resultObjectReceived.response.status +')')
+    anErrorOccurred = true;
+
+  };
+
+  return anErrorOccurred;
+}
+
 function postAPI(apicall) {
+
+  url = buildURL(apicall)
+
+  var resultObject = HTTP.post(url, {
+      headerFields: {
+          'Authorization': 'Bearer '.concat(settings.homeassistant.key),
+          'Content-Type' : 'application/json'
+      },
+      resultType: 'json'
+    });
+
+  return resultObject;
+}
+
+
+function getAPI(apicall) {
+
+  url = buildURL(apicall)
+
+  var resultObject = HTTP.get(url, {
+      headerFields: {
+          'Authorization': 'Bearer '.concat(settings.homeassistant.key),
+          'Content-Type' : 'application/json'
+      },
+      resultType: 'json'
+    });
+
+  return resultObject;
+}
+
+function buildURL(apicall) {
 
   url = ""
 
@@ -136,48 +164,41 @@ function postAPI(apicall) {
 
   url = url.concat(apicall)
 
-  var resultObject = HTTP.post(url, {
-      headerFields: {
-          'Authorization': 'Bearer '.concat(settings.homeassistant.key),
-          'Content-Type' : 'application/json'
-      },
-      resultType: 'json'
-    });
-
-  return resultObject;
+  return url;
 }
+
 
 function run(argument) {
 
-  var output = [];
+  var actions = [];
 
-  output.push({
+  actions.push({
       title: 'Restart Home Assistant',
       icon: 'home-assistant-logo.png',
       action: 'restartHA',
       actionRunsInBackground: true
   });
 
-  output.push({
+  actions.push({
       title: 'Check configuration',
       icon: 'home-assistant-logo.png',
       action: 'checkConfig',
       actionRunsInBackground: true
   });
 
-  output.push({
+  actions.push({
       title: 'Reload core config',
       icon: 'home-assistant-logo.png',
       action: 'reloadCoreConfig',
       actionRunsInBackground: true
   });
 
-  output.push({
+  actions.push({
       title: 'Reload automations',
       icon: 'home-assistant-logo.png',
       action: 'reloadAutomations',
       actionRunsInBackground: true
   });
 
-  return output;
+  return actions;
 }
