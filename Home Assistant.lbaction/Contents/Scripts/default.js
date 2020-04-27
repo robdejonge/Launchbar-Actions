@@ -1,3 +1,6 @@
+// loads a few functions offloaded for overviewability
+include('../Resources/functions.js');
+
 // loads the settings file
 try {
     var settings = File.readJSON(Action.path+'/Contents/Resources/settings.json');
@@ -9,27 +12,7 @@ try {
 // loads the name of the installation and HA version number
 var discovery_info = getAPI('discovery_info').data;
 
-// --
-
-function restartHA() {
-
-  action = 'restart Home Assistant'
-  result = postAPI('services/homeassistant/restart');
-
-  if (anyCommonErrors(result, action)) {
-
-    // already did what needed to be done
-
-  } else {
-
-    LaunchBar.displayNotification({
-
-      title  : discovery_info.location_name + ' (Home Assistant ' + discovery_info.version + ')',
-      string : action.charAt(0).toUpperCase() + action.substring(1) + ' complete'
-
-    });
-  }
-}
+// ---------------------------------------------------------------------------------
 
 function checkConfig() {
 
@@ -55,12 +38,23 @@ function checkConfig() {
   }
 }
 
-function reloadCoreConfig() {
+function executeAPICall(my) {
 
-  action = 'reload core configuration';
-  result = postAPI('services/homeassistant/reload_core_config');
+  if (my.method == "post") {
 
-  if (anyCommonErrors(result, action)) {
+      result = postAPI(my.call);
+
+  } else if (my.method == "get") {
+
+      result = getAPI(my.call);
+
+  } else {
+
+    LaunchBar.alert("Misconfigured API call, method may be POST or GET only");
+
+  }
+
+  if (anyCommonErrors(result, my.action)) {
 
     // already did what needed to be done
 
@@ -69,115 +63,17 @@ function reloadCoreConfig() {
     LaunchBar.displayNotification({
 
       title  : discovery_info.location_name + ' (Home Assistant ' + discovery_info.version + ')',
-      string : action.charAt(0).toUpperCase() + action.substring(1) + ' complete'
+      string : my.action.charAt(0).toUpperCase() + my.action.substring(1) + ' complete'
 
-    });
+    })
   }
 }
 
-function reloadAutomations() {
-
-  action = 'reload automations';
-  result = postAPI('services/automation/reload');
-
-  if (anyCommonErrors(result, action)) {
-
-    // already did what needed to be done
-
-  } else {
-
-    LaunchBar.displayNotification({
-
-      title  : discovery_info.location_name + ' (Home Assistant ' + discovery_info.version + ')',
-      string : action.charAt(0).toUpperCase() + action.substring(1) + ' complete'
-
-    });
-  }
-}
-
-function anyCommonErrors(resultObjectReceived, thingToDo) {
-
-  anErrorOccurred = false;
-
-  if (resultObjectReceived.timeOut) {
-
-    LaunchBar.alert('Request to ' + thingToDo + ' timed out.')
-    anErrorOccurred = true;
-
-  } else if (resultObjectReceived.error != undefined) {
-
-    LaunchBar.alert('Unable to '+thingToDo, resultObjectReceived.error)
-    anErrorOccurred = true;
-
-  } else if (resultObjectReceived.response.status != 200) {
-
-    LaunchBar.alert('Unable to '+thingToDo, resultObjectReceived.response.localizedStatus + ' (' + resultObjectReceived.response.status +')')
-    anErrorOccurred = true;
-
-  };
-
-  return anErrorOccurred;
-}
-
-function postAPI(apicall) {
-
-  url = buildURL(apicall)
-
-  var resultObject = HTTP.post(url, {
-      headerFields: {
-          'Authorization': 'Bearer '.concat(settings.homeassistant.key),
-          'Content-Type' : 'application/json'
-      },
-      resultType: 'json'
-    });
-
-  return resultObject;
-}
-
-
-function getAPI(apicall) {
-
-  url = buildURL(apicall)
-
-  var resultObject = HTTP.get(url, {
-      headerFields: {
-          'Authorization': 'Bearer '.concat(settings.homeassistant.key),
-          'Content-Type' : 'application/json'
-      },
-      resultType: 'json'
-    });
-
-  return resultObject;
-}
-
-function buildURL(apicall) {
-
-  url = ""
-
-  if (settings.homeassistant.ssl) {
-    url = "https://";
-  } else {
-    url = "http://";
-  }
-
-  url = url.concat(settings.homeassistant.hostname,':',settings.homeassistant.port,'/',settings.homeassistant.base,'/');
-
-  url = url.concat(apicall)
-
-  return url;
-}
 
 
 function run(argument) {
 
   var actions = [];
-
-  actions.push({
-      title: 'Restart Home Assistant',
-      icon: 'home-assistant-logo.png',
-      action: 'restartHA',
-      actionRunsInBackground: true
-  });
 
   actions.push({
       title: 'Check configuration',
@@ -186,19 +82,20 @@ function run(argument) {
       actionRunsInBackground: true
   });
 
-  actions.push({
-      title: 'Reload core config',
-      icon: 'home-assistant-logo.png',
-      action: 'reloadCoreConfig',
-      actionRunsInBackground: true
-  });
+  for(let i = 0; i < settings.API_calls.length; i++){
 
-  actions.push({
-      title: 'Reload automations',
-      icon: 'home-assistant-logo.png',
-      action: 'reloadAutomations',
-      actionRunsInBackground: true
-  });
+    this_action = settings.API_calls[i].action;
+
+    actions.push({
+        title: this_action.charAt(0).toUpperCase() + this_action.substring(1),
+        icon: 'home-assistant-logo.png',
+        action: 'executeAPICall',
+        actionArgument: settings.API_calls[i],
+        actionRunsInBackground: true
+    });
+
+  }
 
   return actions;
+
 }

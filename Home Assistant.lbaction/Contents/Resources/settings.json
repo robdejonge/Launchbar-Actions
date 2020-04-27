@@ -5,5 +5,10 @@
         "port" : 443,
         "base" : "api",
         "key" : "Go to Home Assistant, click on your user bottom-left, create a Long-Lived Access Token"
-    }
+      },
+      "API_calls": [
+        { "action": "restart Home Assistant", "call": "services/homeassistant/restart", "method": "post" },
+        { "action": "reload core configuration", "call": "services/homeassistant/reload_core_config", "method": "post" },
+        { "action": "reload automations", "call": "services/automation/reload", "method": "post" }
+      ]
 }
