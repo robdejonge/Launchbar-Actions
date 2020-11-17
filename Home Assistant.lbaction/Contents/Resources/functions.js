@@ -13,6 +13,23 @@ function postAPI(apicall) {
   return resultObject;
 }
 
+function postAPI_JSON(apicall, service_data) {
+
+  url = buildURL(apicall);
+
+  var resultObject = HTTP.postJSON(url, {
+      headerFields: {
+          'Authorization': 'Bearer '.concat(settings.homeassistant.key),
+          'Content-Type' : 'application/json'
+      },
+
+      body: service_data,
+
+      resultType: 'json'
+    });
+
+  return resultObject;
+}
 
 function getAPI(apicall) {
 

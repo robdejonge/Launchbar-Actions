@@ -38,6 +38,55 @@ function checkConfig() {
   }
 }
 
+function listScripts() {
+
+  resultaat = getAPI('states');
+
+  var theScripts = [];
+
+  for(let j = 0; j < resultaat.data.length; j++) {
+
+    if (resultaat.data[j].entity_id.split(".")[0] === "script") { 
+
+      theScripts.push({
+          title: resultaat.data[j].attributes.friendly_name,
+          icon: 'home-assistant-logo.png',
+          action: 'runScript',
+          actionArgument: resultaat.data[j].entity_id,
+          actionReturnsItems: false,
+          actionRunsInBackground: true
+      });
+    }
+  }
+
+  return theScripts;
+}
+
+function runScript(entity_id) {
+  
+  action = "run " + entity_id.split(".")[1] + " script";
+
+  service_data = { 
+    'entity_id': entity_id
+  };
+
+  result = postAPI_JSON('services/script/turn_on', service_data);
+  
+  if (anyCommonErrors(result, action)) {
+
+    // already did what needed to be done
+
+  } else {
+
+    LaunchBar.displayNotification({
+
+      title  : discovery_info.location_name + ' (Home Assistant ' + discovery_info.version + ')',
+      string : action.charAt(0).toUpperCase() + action.substring(1) + ' complete'
+
+    })
+  }
+}
+
 function executeAPICall(my) {
 
   if (my.method == "post") {
@@ -82,6 +131,13 @@ function run(argument) {
       actionRunsInBackground: true
   });
 
+  actions.push({
+    title: 'Run a script',
+    icon: 'home-assistant-logo.png',
+    action: 'listScripts',
+    actionReturnsItems: true
+  });
+  
   for(let i = 0; i < settings.API_calls.length; i++){
 
     this_action = settings.API_calls[i].action;
